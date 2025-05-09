@@ -1,0 +1,232 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #282c34;
+  color: white;
+}
+
+.crop-container {
+  position: relative; /* react-easy-crop 需要父元素是 relative positioning */
+  width: 80%;
+  max-width: 600px;
+  height: 400px; /* 設定一個固定高度 */
+  /* 調整寬度以容納裁剪後的圖片 */
+  min-width: 300px; /* 或您認為合適的寬度 */
+  background-color: #3e444f;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  overflow: hidden; /* 確保圖片不會超出容器 */
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background-color: #3e444f;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+}
+
+/* 新增樣式 for top controls */
+.top-controls {
+  margin-bottom: 20px;
+  /* 將上傳按鈕也放在父 flex 容器中，使其與裁剪容器和結果並排 */
+  width: 100%; 
+  display: flex;
+  justify-content: center;
+}
+
+.top-controls input[type="file"] {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #61dafb;
+  background-color: #282c34;
+  color: white;
+  cursor: pointer;
+  max-width: 600px;
+}
+
+.top-controls input[type="file"]::file-selector-button {
+  background-color: #61dafb;
+  border: none;
+  color: #282c34;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+/* 修改 .controls 樣式名稱為 .bottom-controls */
+.bottom-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background-color: #3e444f;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.slider-container label {
+  margin-bottom: 8px;
+  font-size: 1em;
+}
+
+.slider {
+  width: 80%;
+  cursor: pointer;
+}
+
+.show-result-button {
+  background-color: #61dafb;
+  border: none;
+  color: #282c34;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.show-result-button:hover {
+  background-color: #4fa8c5;
+}
+
+/* react-easy-crop 預設會注入其自身的 CSS，但如果禁用了自動注入，
+   則需要手動引入 react-easy-crop/react-easy-crop.css */
+
+/* 新增樣式 for cropped image container */
+.cropped-image-container {
+  margin-left: 20px; /* 與裁剪容器間隔 */
+  padding: 10px;
+  border: 1px solid #61dafb;
+  border-radius: 8px;
+  background-color: #3e444f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 300px; /* 限制最大寬度 */
+}
+
+.cropped-image-container h3 {
+  margin-top: 0;
+  color: #61dafb;
+}
+
+/* 新增下載按鈕樣式 */
+.download-button {
+  background-color: #61dafb;
+  border: none;
+  color: #282c34;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.download-button:hover {
+  background-color: #4fa8c5;
+}
+
+/* 控制按鈕的通用樣式 */
+.control-button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 10px; /* 與上方按鈕間隔 */
+  margin-left: 10px; /* 與旁邊按鈕間隔 */
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.control-button:hover {
+  background-color: #45a049;
+}
+
+/* Specific style for the actual download button if needed, or reuse .control-button */
+.actual-download-button {
+  background-color: #008CBA; /* Blue */
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.actual-download-button:hover {
+  background-color: #007B9A;
+}
+
+.download-options {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #555;
+  border-radius: 8px;
+  background-color: #333842; /* Slightly different background for the section */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 90%;
+  max-width: 500px; /* Adjust as needed */
+}
+
+.download-options h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #61dafb;
+}
+
+.download-options label {
+  margin-right: 5px;
+}
+
+.download-options select {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #61dafb;
+  background-color: #282c34;
+  color: white;
+}
+
+.quality-slider {
+  margin-top: 10px;
+  width: 100%;
+} 
