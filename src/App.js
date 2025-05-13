@@ -3,21 +3,41 @@ import Cropper from 'react-easy-crop';
 import getCroppedImg from './cropImage'; // 引入輔助函數
 import './App.css'; // 我稍後會建立這個檔案
 
+/**
+ * 主要的應用程式元件，包含圖片裁剪功能。
+ * 使用 react-easy-crop 來處理裁剪互動。
+ */
 const App = () => {
+  /** @type {{x: number, y: number}} 裁剪區域左上角的座標 (相對於圖片原始尺寸) */
   const [crop, setCrop] = useState({ x: 0, y: 0 });
+  /** @type {number} 圖片的縮放比例 */
   const [zoom, setZoom] = useState(1);
+  /** @type {number} 圖片的旋轉角度 (單位：度) */
   const [rotation, setRotation] = useState(0);
+  /** @type {{x: number, y: number, width: number, height: number} | null} 裁剪區域的像素資訊 (由 onCropComplete 提供) */
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const [imageToCrop, setImageToCrop] = useState(null); // 用於儲存使用者上傳的圖片或預設圖片
-  const [croppedImage, setCroppedImage] = useState(null); // 新增狀態來儲存裁剪後的圖片 URL
+  /** @type {string | null} 當前待裁剪的圖片來源 (Data URL) */
+  const [imageToCrop, setImageToCrop] = useState(null);
+  /** @type {string | null} 裁剪後生成的圖片預覽 URL (通常是 PNG Data URL) */
+  const [croppedImage, setCroppedImage] = useState(null);
+  /** @type {string} 下載圖片時選擇的格式 (例如 'image/png', 'image/jpeg') */
   const [downloadFormat, setDownloadFormat] = useState('image/png');
+  /** @type {number} 下載 JPEG 格式時的圖片品質 (0.1 到 1) */
   const [imageQuality, setImageQuality] = useState(0.92);
 
+  /**
+   * react-easy-crop 的回呼函數，當裁剪或縮放操作完成時觸發。
+   * @param {object} croppedArea 裁剪區域的百分比座標和大小。
+   * @param {object} croppedAreaPixelsValue 裁剪區域的像素座標和大小。
+   */
   const onCropComplete = useCallback((croppedArea, croppedAreaPixelsValue) => {
     setCroppedAreaPixels(croppedAreaPixelsValue);
   }, []);
 
-  // Generates a PNG for preview
+  /**
+   * 產生並顯示裁剪後的圖片預覽 (使用 PNG 格式以支援透明度)。
+   * 同時會自動將當前的裁剪設定儲存到 localStorage。
+   */
   const showCroppedImagePreview = useCallback(async () => {
     if (!imageToCrop || !croppedAreaPixels) {
       alert('請先上傳圖片並完成裁剪。');
@@ -25,12 +45,15 @@ const App = () => {
     }
     try {
       // Preview always uses PNG for best transparency handling with circular crop
+      // 預覽固定使用 PNG 格式，以便在圓形裁剪時更好地處理透明度
       const croppedImgResult = await getCroppedImg(
         imageToCrop,
         croppedAreaPixels,
         rotation,
         { horizontal: false, vertical: false }, // flip (optional)
+                                               // 翻轉設定 (可選)
         'image/png' // Format for preview
+                    // 預覽格式
       );
       setCroppedImage(croppedImgResult);
       // Auto-save settings after successful preview generation
@@ -51,6 +74,10 @@ const App = () => {
     }
   }, [imageToCrop, croppedAreaPixels, rotation, crop, zoom]);
 
+  /**
+   * 根據目前的設定產生裁剪後的圖片，並觸發瀏覽器下載。
+   * 允許使用者選擇下載格式 (PNG/JPEG) 和 JPEG 品質。
+   */
   const handleDownload = useCallback(async () => {
     if (!imageToCrop || !croppedAreaPixels) {
       alert('請先上傳圖片並完成裁剪以供下載。');
@@ -79,6 +106,12 @@ const App = () => {
     }
   }, [imageToCrop, croppedAreaPixels, rotation, downloadFormat, imageQuality]);
 
+  /**
+   * 處理檔案上傳事件。
+   * 讀取使用者選擇的圖片檔案，將其轉換為 Data URL，
+   * 並嘗試從 localStorage 載入該圖片之前儲存的裁剪設定。
+   * @param {React.ChangeEvent<HTMLInputElement>} e 檔案輸入框的 change 事件物件。
+   */
   const onFileChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -97,6 +130,7 @@ const App = () => {
             setRotation(savedRotation || 0);
             setCroppedAreaPixels(savedPixels || null);
             // Optionally, auto-generate preview if old settings are loaded
+            // 如果載入了舊設定，可選擇自動產生預覽
             // if (savedPixels && newImageSrc) {
             //   showCroppedImagePreview(); // Call the preview function
             // }
@@ -118,7 +152,10 @@ const App = () => {
     }
   };
 
-  // 手動儲存和載入按鈕 (可選)
+  /**
+   * 手動將目前的裁剪設定 (crop, zoom, rotation, croppedAreaPixels) 儲存到 localStorage。
+   * 使用圖片來源的前 50 個字元作為 key 的一部分。
+   */
   const handleSaveSettings = () => {
     if (imageToCrop && croppedAreaPixels) {
       try {
@@ -137,6 +174,9 @@ const App = () => {
     }
   };
 
+  /**
+   * 從 localStorage 載入目前圖片對應的已儲存裁剪設定。
+   */
   const handleLoadSettings = () => {
     if (imageToCrop) {
       try {
